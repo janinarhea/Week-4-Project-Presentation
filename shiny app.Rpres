@@ -1,0 +1,80 @@
+Shiny App: Developing Data Products - Week 4 Project)
+========================================================
+author: Janina Lazo-Cruz
+date: Feb 17, 2019
+autosize: true
+
+Overview
+========================================================
+
+This is an Rstudio shiny application developed as part of final project in the Developing Data Products course in Coursera Data Science Specialization track. The application is a histogram builder using water levels in feet of Lake Huron.
+
+The application includes:
+
+- Slider input to select the number of bins desired for the plot
+- A plot that calculates and shows the distribution of water levels depending on the chosen number of bins
+
+
+Lake Huron Levels
+========================================================
+Annual measurements of the level, in feet, of Lake Huron 1875-1972.
+
+```{r}
+LakeHuron
+```
+
+ui.R
+========================================================
+
+library(shiny)
+
+Define UI for application that draws a histogram
+
+shinyUI(fluidPage(
+  
+  # Application title
+  titlePanel("Lake Huron Levels in Feet"),
+  
+  # Sidebar with a slider input for number of bins 
+  sidebarLayout(
+    sidebarPanel(
+       sliderInput("bins",
+                   "Number of bins:",
+                   min = 1,
+                   max = 50,
+                   value = 30)
+    ),
+    
+    # Show a plot of the generated distribution
+    mainPanel(
+       plotOutput("distPlot")
+    )
+  )
+))
+
+
+server.R
+========================================================
+
+
+library(shiny)
+
+Define server logic required to draw a histogram
+
+shinyServer(function(input, output) {
+   
+  output$distPlot <- renderPlot({
+    
+    # generate bins based on input$bins from ui.R
+    x    <- LakeHuron
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    
+    # draw the histogram with the specified number of bins
+    hist(x, breaks = bins, col = 'blue', border = 'black')
+    
+  })
+  
+})
+
+
+
